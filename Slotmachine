@@ -1,0 +1,58 @@
+import random
+
+import collections
+import string
+# adds colour to words
+
+# list of all stocks
+
+
+def slotmachine():
+    print("Welcome to the Slot Machnine")
+    money = 1000
+    while money > 0:
+        print("You have $ {} left".format(money))
+        print("")
+        valid = 'True'
+        how_much = input(
+            "How much money do you want to put down? (Enter L to leave game) ")
+        if how_much == 'L':
+            break
+        else:
+            while valid == 'True':
+                try:
+                    how_much = int(how_much)
+                    valid = 'False'
+                except ValueError:
+                    print("This is not a number")
+                    how_much = input(
+                        "How much money do you want to put down? ")
+            if how_much > money:
+                print("you do not have enough money")
+            elif how_much < 0:
+                print("That is a negative number")
+            else:
+                money = money - how_much
+                digits = string.digits
+                letter_digit_list = list(string.digits + string.ascii_letters)
+    # shuffle random source of letters and digits
+                random.shuffle(letter_digit_list)
+    # now create random string of length 6 which is a combination
+    # of numbers and string
+    # next concatenate it with sample_str
+                sample_str = ''.join(
+                    (random.choice(letter_digit_list) for i in range(3)))
+                aList = list(sample_str)
+                random.shuffle(aList)
+
+                final_str = ''.join(aList)
+                print("Slot Machine:", final_str)
+
+                d = collections.defaultdict(int)
+                for c in final_str:
+                    d[c] += 1
+            for c in sorted(d, key=d.get, reverse=True):
+                if d[c] == 2:
+                    money = how_much * 10000 + money
+                elif d[c] == 3:
+                    money = how_much * 1000000 + money
