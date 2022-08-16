@@ -1,0 +1,174 @@
+
+# list of all stocks
+stocks = [
+    ("JNUG", 4.47, "volatile"),
+    ("GOOGL", 1214.27, "stable"),
+    ("JDST", 34.00, "volatile"),
+    ("KGC", 3.47, "stable"),
+    ("NEM", 39.50, "stable"),
+    ("LPI", 0.47, "volatile"),
+    ("COP", 31.38, "stable"),
+    ("FBT", 127.14, "volatile"),
+    ("SWN", 2.12, "stable"),
+    ("ZBIO", 11.84, "volatile"),
+    ("HNDL", 21.89, "volatile"),
+    ("AAPL", 277.97, "stable"),
+    ("FXTL", 32.84, "volatile"),
+    ("NOCT", 31.06, "volatile"),
+    ("BRK.A", 289000.00, "stable"),
+    ("MSFT", 19.77, "stable")
+]
+
+# sets users starting money, inventory, shares, and all stocks
+playerMoney = 10000
+numbers = ['1', '2', '3', '4', '5', '6', '7', ' 8', '9', '10',
+           '11', '12', '13', '14', '15']
+inventory = []
+sharesList = []
+allStocks = []
+stocksList = ["JNUG", "GOOGL", "JDST", "KGC", "NEM", "LPI",
+              "COP", "FBT", "SWN", "ZBIO", "HNDL", "AAPL",
+              "FXTL", "NOCT", "BRK.A", "MSFT"]
+
+year = 2022
+
+
+# assigns stocks with their name, cost and volatilty
+class StockNames:
+    global playerMoney
+
+    def __init__(self, name, cost, volatility):
+        # assings stock with name
+        self.name = name
+        # gives stock the cost
+        self.cost = cost
+        # gives stock the volatility
+        self.volatility = volatility
+        self.displayBuying1 = ('''
+    Name:''' + self.name + '''
+    Stock Price:''' + str(self.cost) + '''
+    Volatility:''' + self.volatility + '''
+    ''')
+        self.displayBuying = (self.name + ": " + str(self.cost))
+
+    def how_much(self):
+        while True:
+            check = 'True'
+            while check == 'True':
+                try:
+                    how_much = int(input("""How many
+                    shares of {} do you want?""".format(self.name)))
+                    check = 'False'
+                except ValueError:
+                    print("This is not a number")
+            if how_much < 1:
+                print("you cannot enter a negative number")
+            else:
+                order_value = self.cost * how_much
+                break
+            return order_value
+
+# allows user to skip a year, causing price to increase / decrease
+    def skipAnYear(self):
+        # determines if stock will go up or down, 1 meaning up, 2 meaning down
+        PlusOrMinus = random.choice([1, 2])
+    # if stock is volatile or stable the price will change accordingly
+        if self.volatility == "volatile":
+            volatilityNumber = 3
+        elif self.volatility == "stable":
+            volatilityNumber = 1
+        change = volatilityNumber * (self.cost / 10)
+    # increases stock price
+        if PlusOrMinus == 1:
+            self.cost += change
+            self.cost = round(self.cost, 2)
+    # decreases stock price
+        elif PlusOrMinus == 2:
+            self.cost -= change
+            self.cost = round(self.cost, 2)
+    # rounds up price so it does not go below 1
+        if self.cost < 1:
+            self.cost = 1
+            # changes stock value in players inventory
+        for stock in inventory:
+            if self.name == stock[0]:
+                stock[1] = self.cost
+
+    # allows user to purchase stock
+    def buy(self, order_value):
+        global playerMoney
+    # minuses stock cost from players money
+        accountBalance = playerMoney - order_value
+        if accountBalance > 0:
+            print("You've successfully bought stock " + self.name)
+            playerMoney -= order_value
+            inventory_addition = order_value / self.cost
+            for i in range(int(inventory_addition)):
+                inventory.append(self.name)
+        else:
+            print("You do not have enough funds for this transaction.")
+            input("")
+            os.system('clear')
+
+    # adds stock to share list
+    # counts how many stocks you have and prints it
+    def displayAfterBuying(self):
+        for i in range(0, len(inventory)):
+            if inventory[i] == self.name:
+                sharesList.append(inventory[i])
+        stockNumbers = len(sharesList)
+        print("You have " +
+              str(stockNumbers) + " shares of " +
+              self.name + ", and they now cost:" +
+              str(self.cost))
+        sharesList.clear()
+
+    # sells stock
+    def sell(self):
+        global playerMoney
+        sellingShare = input(
+          'Which shares would you like to sell? (Use the name of the stock): ')
+        if sellingShare in inventory:
+            # inventory.remove(sellingShare)
+            for stock in allStocks:
+                if stock.name == sellingShare:
+                    selling = stock.how_much()
+                    playerMoney += selling
+                    inventory_addition = selling / stock.cost
+                    for i in range(int(inventory_addition)):
+                        inventory.remove(sellingShare)
+
+            print(
+                "You've successfully sold one of your shares of " +
+                sellingShare)
+            input("")
+            os.system('clear')
+        else:
+            print("You don't have stock " + sellingShare)
+            input("")
+            os.system('clear')
+
+# main user game
+
+
+def fullGamestock(year):
+    for i in range(0, 15):
+        stock = stocks[i]
+        name = stock[0]
+        price = stock[1]
+        volatility = stock[2]
+        # assigns the stock value
+        realStock = StockNames(name, price, volatility)
+        allStocks.append(realStock)
+
+    while True:
+        global playerMoney
+        os.system('clear')
+        print("Year: " + str(year))
+        print("Money: $" + str(round(playerMoney, 2)))
+        question = input('''Would you like to:-
+    1. Invest in stocks
+    2. Skip an year
+    3. See how your stocks are doing
+    4. Leave Game
+    Choice: ''')
