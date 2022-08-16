@@ -1,0 +1,48 @@
+import random
+
+
+
+def roluette():
+    print("Welcome to the Roulette")
+    money = 1000
+    while money > 0:
+        print("You have $ {} left".format(money))
+        print("")
+        valid = 'True'
+        how_much = input(
+            "How much money do you want to put down? (Enter L to leave game) ")
+        if how_much == 'L':
+            break
+        else:
+            while valid == 'True':
+                try:
+                    how_much = int(how_much)
+                    valid = 'False'
+                except ValueError:
+                    print("This is not a number")
+                    how_much = input(
+                        "How much money do you want to put down? ")
+            if how_much > money:
+                print("you do not have enough money")
+            elif how_much < 0:
+                print("That is a negative number")
+            else:
+                money = money - how_much
+                while True:
+                    blue = input("Red or Black? ")
+                    if blue == 'red':
+                        if random.random() < 0.5:
+                            money = money + how_much * (2)
+                            break
+                        else:
+                            print("it was Black")
+                            break
+                    elif blue == 'black':
+                        if random.random() < 0.5:
+                            money = money + how_much * (2)
+                            break
+                        else:
+                            print("it was Red")
+                            break
+                    else:
+                        print("please type red or black")
